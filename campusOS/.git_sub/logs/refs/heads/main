@@ -1,0 +1,35 @@
+0000000000000000000000000000000000000000 89efde714b85de3808fc9fdf2ff1a4aa17ea9ab7 Your Name <youremail@example.com> 1756395087 +0100	commit (initial): Initial commit for CampusOS
+89efde714b85de3808fc9fdf2ff1a4aa17ea9ab7 89efde714b85de3808fc9fdf2ff1a4aa17ea9ab7 Your Name <youremail@example.com> 1756395274 +0100	Branch: renamed refs/heads/master to refs/heads/main
+89efde714b85de3808fc9fdf2ff1a4aa17ea9ab7 b303abd6caaa30fa9abb66bbc7fe438da9b9b320 Your Name <youremail@example.com> 1758029536 +0100	commit: fix(User): resolve schema conflicts and clean up User model
+b303abd6caaa30fa9abb66bbc7fe438da9b9b320 ed33112f5f298e36076a66de97a64a5ef4f87f96 Your Name <youremail@example.com> 1758030246 +0100	commit: fix(User): recreate User model to resolve virtual field conflicts
+ed33112f5f298e36076a66de97a64a5ef4f87f96 5f9417d31c07025780b85a4edefabe5769b1dd17 violetmoorway-9942 <violetmoorway@gmail.com> 1760436616 +0100	commit: backend-update
+5f9417d31c07025780b85a4edefabe5769b1dd17 9b6533fe77120fb265804d6f2a40de5cffbaebde violetmoorway-9942 <violetmoorway@gmail.com> 1760535229 +0100	commit: front-push
+9b6533fe77120fb265804d6f2a40de5cffbaebde fb33d328e11e30dad22986371af46d71a1a7d17d violetmoorway-9942 <violetmoorway@gmail.com> 1760625570 +0100	commit: hope
+fb33d328e11e30dad22986371af46d71a1a7d17d 773c1643be643d42cff41408933e4aafad82f160 violetmoorway-9942 <violetmoorway@gmail.com> 1760625909 +0100	commit: S
+773c1643be643d42cff41408933e4aafad82f160 817dd45bfff10ce4a081fd98d5c9f562dab84ca4 violetmoorway-9942 <violetmoorway@gmail.com> 1760626160 +0100	commit: omo
+817dd45bfff10ce4a081fd98d5c9f562dab84ca4 2197ee173db9599241b3c373e87e5d4832a467a6 violetmoorway-9942 <violetmoorway@gmail.com> 1760626294 +0100	commit: sam
+2197ee173db9599241b3c373e87e5d4832a467a6 a9fb1b61fefbe6216e735d1c6b9be8ca9a37dd6d violetmoorway-9942 <violetmoorway@gmail.com> 1761382897 +0100	commit: hope
+a9fb1b61fefbe6216e735d1c6b9be8ca9a37dd6d 0eea3d2b2665b86417e65438367266fbea2a4275 violetmoorway-9942 <violetmoorway@gmail.com> 1761385492 +0100	commit: omo
+0eea3d2b2665b86417e65438367266fbea2a4275 76618a671dd3356c3564816b9c1e965cedb71921 violetmoorway-9942 <violetmoorway@gmail.com> 1762519304 +0100	commit: omo
+76618a671dd3356c3564816b9c1e965cedb71921 c00e04c3d6ab2743745333a9acbb2510eb2f2a52 violetmoorway-9942 <violetmoorway@gmail.com> 1763895778 +0100	commit: final push
+c00e04c3d6ab2743745333a9acbb2510eb2f2a52 716664a1a73f1326ec287399bfba1306a046b720 violetmoorway-9942 <violetmoorway@gmail.com> 1764069097 +0100	commit: working
+716664a1a73f1326ec287399bfba1306a046b720 2b66196fcd304ab3127ef0e08686cf23e12106bc violetmoorway-9942 <violetmoorway@gmail.com> 1764315753 +0100	commit: works
+2b66196fcd304ab3127ef0e08686cf23e12106bc b104452ef4665b91151a775ba89a3115ebef121b violetmoorway-9942 <violetmoorway@gmail.com> 1766426453 +0100	commit: antigravity
+b104452ef4665b91151a775ba89a3115ebef121b 74fe4a9168127f4f4256d69d728177014849cc2c violetmoorway-9942 <violetmoorway@gmail.com> 1768991487 +0100	commit: minor fixes
+74fe4a9168127f4f4256d69d728177014849cc2c e03b0b5844a963fa6c335597039ddc7e1c27fb1f violetmoorway-9942 <violetmoorway@gmail.com> 1769164740 +0100	commit: chat
+e03b0b5844a963fa6c335597039ddc7e1c27fb1f cf8a7147504f22599542fc66e75e051063270293 violetmoorway-9942 <violetmoorway@gmail.com> 1769584056 +0100	commit: pdf
+cf8a7147504f22599542fc66e75e051063270293 f1a6a48890118d0abc2918d5788efeadafa31084 violetmoorway-9942 <violetmoorway@gmail.com> 1769804345 +0100	commit: login fix
+f1a6a48890118d0abc2918d5788efeadafa31084 20f24d2c4fe605745109b962c2e600c897084aaa violetmoorway-9942 <violetmoorway@gmail.com> 1774720351 +0100	commit: eddy
+20f24d2c4fe605745109b962c2e600c897084aaa 9188926eca4c9f5bae0507c795f550c79300a58c violetmoorway-9942 <violetmoorway@gmail.com> 1775123591 +0100	commit (amend): eddy
+9188926eca4c9f5bae0507c795f550c79300a58c bd1dd91b8766e6ced42a2abadde2a74b49baf20b violetmoorway-9942 <violetmoorway@gmail.com> 1775123627 +0100	commit (merge): Emergency Security Refactor: Move AI to Backend & Secure API Keys
+bd1dd91b8766e6ced42a2abadde2a74b49baf20b 2101baea465c0c1fb11f4e6ecfe58e39fb6cf2fb violetmoorway-9942 <violetmoorway@gmail.com> 1775123946 +0100	commit: Fix merge conflicts and syntax errors in ai-buddy.tsx
+2101baea465c0c1fb11f4e6ecfe58e39fb6cf2fb 6c231abb6d8b72ff42a4bd41e666d1ad4ee44b24 violetmoorway-9942 <violetmoorway@gmail.com> 1775487248 +0100	commit: Security: Purge leaked secrets and untrack backend/.env
+6c231abb6d8b72ff42a4bd41e666d1ad4ee44b24 9cd9a5459230ab9f42d5c55a2390358f9f1c48e4 violetmoorway-9942 <violetmoorway@gmail.com> 1775488509 +0100	commit: Fix: Hardcode model to gemini-1.5-flash to bypass rate limits
+9cd9a5459230ab9f42d5c55a2390358f9f1c48e4 7fc4147279285a83fe121161aed932fa926e7876 violetmoorway-9942 <violetmoorway@gmail.com> 1775496248 +0100	commit: Fix: Re-enable dynamic model discovery but explicitly omit Gemini 2.0-flash
+7fc4147279285a83fe121161aed932fa926e7876 a53729bac84d538ca39fc37af531723558b26f0c violetmoorway-9942 <violetmoorway@gmail.com> 1782107837 +0100	commit: Repository cleanup: remove database.db from tracking, update .gitignore, relocate debug scripts, customize README, and commit local updates
+a53729bac84d538ca39fc37af531723558b26f0c ecbcb01dcf4fa60d9391b8abbcf7e717a70cb80f violetmoorway-9942 <violetmoorway@gmail.com> 1782108179 +0100	commit: Update project description in package.json and README.md to match the GitHub About field
+ecbcb01dcf4fa60d9391b8abbcf7e717a70cb80f 5c40f56940b1967326ecbeb38ae5639a02086e3c violetmoorway-9942 <violetmoorway@gmail.com> 1789058518 +0100	commit: fix(eddy): pin to gemini-2.0-flash, remove fragile dynamic model discovery
+5c40f56940b1967326ecbeb38ae5639a02086e3c f60c064174bd9bea09b570cf91b85bb808cf6f9d violetmoorway-9942 <violetmoorway@gmail.com> 1789064156 +0100	commit: fix(android): add tools:replace for allowBackup to fix manifest merger conflict with notification-listener
+f60c064174bd9bea09b570cf91b85bb808cf6f9d e201e057f5c7dc04613e4d1b068872f1cbae519d violetmoorway-9942 <violetmoorway@gmail.com> 1789066828 +0100	commit: fix(ai): update eddy system prompt, increase tokens to 4096, fix android keyboard and ui padding
+e201e057f5c7dc04613e4d1b068872f1cbae519d ee663d43d68243b29a7aa8ee934a914798bb5f0a Samuel Daniyan <samueldaniyan564@gmail.com> 1791810954 +0100	commit: Update project dependencies, android configuration, and build setup
+ee663d43d68243b29a7aa8ee934a914798bb5f0a 83fd84d12c28a85d5e6d48d8a9a78fa67fbf5c08 Samuel Daniyan <samueldaniyan564@gmail.com> 1791812294 +0100	commit: Configure Google Maps API key directly in app.json and app.config.js

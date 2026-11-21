@@ -1,0 +1,1089 @@
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Animated, Dimensions, FlatList, Image, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View, Text } from 'react-native';
+import KeyboardSafeWrapper from '../../components/KeyboardSafeWrapper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ThemedText } from '../../components/ThemedText';
+import { Button } from '../../components/ui/Button';
+import { Colors } from '../../src/constants/Colors';
+import { useAuth } from '../../src/contexts/AuthContext';
+import { useTheme } from '../../src/contexts/NewThemeContext';
+import { useUser } from '../../src/contexts/UserContext';
+import { useThemeColor } from '../../src/hooks/useThemeColor';
+import { API_BASE_URL } from '../config/api';
+import { Picker } from '@react-native-picker/picker';
+import { BrandColors } from '../theme/edufi';
+
+const { width, height } = Dimensions.get('window');
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  input: {
+    flex: 1,
+    height: 50,
+    marginLeft: 10,
+    backgroundColor: 'transparent',
+  },
+  doodleContainer: {
+    position: 'absolute',
+    width: width,
+    height: height,
+    pointerEvents: 'none',
+    zIndex: -1,
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 0,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
+  },
+  header: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 0,
+    backgroundColor: 'transparent',
+  },
+  logo: {
+    marginBottom: -30,
+    width: 250,
+    height: 250,
+    resizeMode: 'contain',
+  },
+  appTitle: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#fff',
+    letterSpacing: 2,
+    textAlign: 'center',
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#fff',
+    textAlign: 'center',
+  },
+  formContainer: {
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  formCard: {
+    width: '90%',
+    borderRadius: 24,
+    padding: 24,
+  },
+  errorContainer: {
+    width: '100%',
+    backgroundColor: '#ffcccc',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#cc0000',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 50,
+    marginBottom: 16,
+    paddingHorizontal: 15,
+    borderRadius: 12,
+    borderWidth: 0,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  passwordToggle: {
+    padding: 5,
+  },
+  fieldError: {
+    color: '#ff4444',
+    fontSize: 12,
+    marginBottom: 10,
+    alignSelf: 'flex-start',
+    paddingLeft: 5,
+  },
+  forgotPasswordButton: {
+    alignSelf: 'flex-end',
+    marginBottom: 20,
+  },
+  forgotPasswordText: {
+    color: BrandColors.brandGreen,
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
+  authButton: {
+    height: 50,
+    borderRadius: 25,
+    marginTop: 10,
+    backgroundColor: BrandColors.brandGreen, // Brand Green
+    elevation: 3,
+  },
+  createAccountButton: {
+    height: 50,
+    borderRadius: 25,
+    marginTop: 10,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: BrandColors.brandGreen,
+  },
+  secondaryButtonText: {
+    color: BrandColors.brandGreen,
+    fontWeight: 'bold',
+  },
+  backButton: {
+    height: 50,
+    borderRadius: 25,
+    marginTop: 10,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#666',
+  },
+  orTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginVertical: 15,
+  },
+  orLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#ccc',
+  },
+  orText: {
+    marginHorizontal: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#ccc',
+  },
+  socialButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 20,
+    marginTop: 10,
+  },
+  socialButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F7',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  modalContent: {
+    width: 300,
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
+  },
+  profileImagePlaceholder: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalButtons: {
+    width: '100%',
+    gap: 12,
+  },
+  modalButton: {
+    width: '100%',
+    marginBottom: 8,
+  },
+  suggestionsContainer: {
+    maxHeight: 200,
+    width: width * 0.85,
+    borderRadius: 10,
+    borderWidth: 1,
+    marginTop: -5,
+    marginBottom: 10,
+    zIndex: 1000,
+  },
+  suggestionItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+  },
+  picker: {
+    flex: 1,
+    height: 50,
+    marginLeft: 5,
+  },
+  pickerModalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  pickerModalContent: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 30,
+  },
+  pickerModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(128, 128, 128, 0.3)',
+  },
+});
+
+interface MovingDoodleProps {
+  icon: keyof typeof MaterialIcons.glyphMap;
+  size: number;
+  initialX: number;
+  initialY: number;
+}
+
+const MovingDoodle: React.FC<MovingDoodleProps> = ({ icon, size, initialX, initialY }) => {
+  const moveX = useRef(new Animated.Value(initialX)).current;
+  const moveY = useRef(new Animated.Value(initialY)).current;
+
+  useEffect(() => {
+    const animate = () => {
+      const newX = Math.random() * (width * 0.8);
+      const newY = Math.random() * (height * 0.8);
+      const duration = 15000 + Math.random() * 10000; // 15-25 seconds
+
+      Animated.parallel([
+        Animated.timing(moveX, {
+          toValue: newX,
+          duration,
+          useNativeDriver: true,
+        }),
+        Animated.timing(moveY, {
+          toValue: newY,
+          duration,
+          useNativeDriver: true,
+        })
+      ]).start(() => animate());
+    };
+
+    animate();
+  }, []);
+
+  return (
+    <Animated.View
+      style={{
+        position: 'absolute',
+        transform: [
+          { translateX: moveX },
+          { translateY: moveY },
+          { rotate: `${Math.random() * 360}deg` },
+          { scale: 0.8 + Math.random() * 0.4 }
+        ],
+      }}
+    >
+      <MaterialIcons
+        name={icon}
+        size={size}
+        color="#0B3C5D"
+        style={{ opacity: 0.05 }}
+      />
+    </Animated.View>
+  );
+};
+
+const DoodleBackground = () => {
+  const doodles = [
+    { name: 'school', size: 45 },
+    { name: 'menu-book', size: 40 },
+    { name: 'edit', size: 35 },
+    { name: 'calculate', size: 40 },
+    { name: 'backpack', size: 45 },
+    { name: 'science', size: 40 },
+    { name: 'psychology', size: 45 },
+    { name: 'computer', size: 40 }
+  ] as const;
+
+  return (
+    <View style={styles.doodleContainer} pointerEvents="none">
+      {Array.from({ length: 15 }).map((_, index) => {
+        const doodle = doodles[index % doodles.length];
+        return (
+          <MovingDoodle
+            key={index}
+            icon={doodle.name}
+            size={doodle.size}
+            initialX={Math.random() * (width * 0.8)}
+            initialY={Math.random() * (height * 0.8)}
+          />
+        );
+      })}
+    </View>
+  );
+};
+
+const LoginSignUpScreen = () => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showProfilePicModal, setShowProfilePicModal] = useState(false);
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [uploadingPic, setUploadingPic] = useState(false);
+
+  // New academic fields
+  const [university, setUniversity] = useState('');
+  const [level, setLevel] = useState('');
+  const [course, setCourse] = useState('');
+  const [showUniversitySuggestions, setShowUniversitySuggestions] = useState(false);
+  const [universitySuggestions, setUniversitySuggestions] = useState<string[]>([]);
+  const [showLevelPicker, setShowLevelPicker] = useState(false);
+
+  const router = useRouter();
+  const { login, signup, user } = useAuth();
+  const { updateUser } = useUser();
+  const { theme, isDark } = useTheme();
+
+  // Signup Step State (1: Identity, 2: Academic)
+  const [signupStep, setSignupStep] = useState(1);
+
+  const primaryColor = useThemeColor({ light: Colors.light.primary, dark: Colors.dark.primary }, 'primary');
+  const backgroundColor = theme.background;
+  const textColor = theme.text;
+  const textSecondaryColor = theme.secondary;
+  const cardColor = theme.card;
+  const borderColor = theme.border;
+  // const logoColor = theme.primary; // Unused now
+
+  // List of common universities for autocomplete
+  const UNIVERSITIES = [
+    'University of Lagos',
+    'University of Ibadan',
+    'Obafemi Awolowo University',
+    'University of Nigeria',
+    'Ahmadu Bello University',
+    'Covenant University',
+    'Lagos State University',
+    'University of Benin',
+    'Federal University of Technology, Akure',
+    'University of Port Harcourt'
+  ];
+
+  const LEVELS = [
+    '100 Level',
+    '200 Level',
+    '300 Level',
+    '400 Level',
+    '500 Level',
+    '600 Level',
+    '700 Level',
+    'Graduate/Masters',
+    'PhD'
+  ];
+
+  const handleUniversityChange = (text: string) => {
+    setUniversity(text);
+    setErrors(prev => ({ ...prev, university: '' }));
+
+    if (text.length > 0) {
+      const filtered = UNIVERSITIES.filter(uni =>
+        uni.toLowerCase().includes(text.toLowerCase())
+      );
+      setUniversitySuggestions(filtered);
+      setShowUniversitySuggestions(filtered.length > 0);
+    } else {
+      setShowUniversitySuggestions(false);
+    }
+  };
+
+  const selectUniversity = (uni: string) => {
+    setUniversity(uni);
+    setShowUniversitySuggestions(false);
+  };
+
+  const renderDoodles = () => {
+    const doodleIcons = ['school', 'menu-book', 'edit', 'calculate', 'backpack'] as const;
+    return Array.from({ length: 20 }).map((_, index) => (
+      <MaterialIcons
+        key={index}
+        name={doodleIcons[index % doodleIcons.length]}
+        size={40}
+        color="#0B3C5D"
+        style={{
+          position: 'absolute',
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          transform: [{ rotate: `${Math.random() * 360}deg` }],
+          opacity: 0.1,
+          zIndex: -1 // Move doodles behind content
+        }}
+      />
+    ));
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!isLogin) {
+      // Signup validation
+      if (signupStep === 1) {
+        if (!username.trim()) newErrors.username = 'Username is required';
+        if (!fullName.trim()) newErrors.fullName = 'Full name is required';
+        if (!email.trim()) newErrors.email = 'Email is required';
+        else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Please enter a valid email';
+        if (!password) newErrors.password = 'Password is required';
+        else if (password.length < 3) newErrors.password = 'Password must be at least 3 characters';
+        if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+      } else {
+        // Step 2
+        if (!university.trim()) newErrors.university = 'University is required';
+        if (!level) newErrors.level = 'Academic level is required';
+        if (!course.trim()) newErrors.course = 'Course/Major is required';
+      }
+    } else {
+      // Login validation
+      if (!email.trim()) newErrors.email = 'Email is required';
+      if (!password) newErrors.password = 'Password is required';
+    }
+
+    console.log("Validation errors:", newErrors);
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleAuthentication = async () => {
+    // Validate form first
+    const isValid = validateForm();
+    if (!isValid) {
+      setLoading(false);
+      return;
+    }
+
+    if (!isLogin && signupStep === 1) {
+      setSignupStep(2);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setErrors({});
+
+    try {
+      if (isLogin) {
+        await login(email, password);
+        router.replace('/(tabs)');
+      } else {
+        // Signup returns a string (display_name) on success
+        const displayName = await signup(email, password, username, fullName, university, level, course);
+
+        // If we get here, signup was successful
+        // Auto-login after successful signup
+        await login(email, password);
+        setShowProfilePicModal(true);
+      }
+    } catch (error: any) {
+      console.error("Authentication error:", error);
+
+      // Handle specific error types
+      if (error.errorType === 'email') {
+        setErrors({
+          email: error.message || 'No account found with this email address.'
+        });
+      } else if (error.errorType === 'password') {
+        setErrors({
+          password: error.message || 'Incorrect password. Please try again.'
+        });
+      } else if (error.errorType === 'server') {
+        setErrors({
+          auth: 'Server error. Please try again later.'
+        });
+      } else {
+        // Default error message
+        setErrors({
+          auth: error?.message || 'Authentication failed. Please check your credentials and try again.'
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
+    setLoading(true);
+    try {
+      // Implement social login logic here
+      console.log(`Social login with ${provider}`);
+    } catch (error: any) {
+      setErrors((prev: Record<string, string>) => ({
+        ...prev,
+        auth: `Social login failed: ${error.message}`
+      }));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setErrors({ email: 'Please enter your email address' });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert(
+          'Check Your Email',
+          'If an account exists with this email, you will receive a password reset code. Check your email and use the code to reset your password.',
+          [{ text: 'OK' }]
+        );
+      } else {
+        Alert.alert('Error', data.message || 'Failed to process request');
+      }
+    } catch (error: any) {
+      console.error('Forgot password error:', error);
+      Alert.alert('Error', 'Unable to connect to the server. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleProfilePicPick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+    if (!result.canceled && result.assets[0]) {
+      setProfilePic(result.assets[0].uri);
+    }
+  };
+
+  const handleProfilePicUpload = async () => {
+    if (!profilePic) return;
+    setUploadingPic(true);
+    try {
+      const formData = new FormData();
+      // Convert image to base64
+      const response = await fetch(profilePic);
+      const blob = await response.blob();
+      const base64Image = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            const base64Data = reader.result.split(',')[1];
+            if (base64Data) {
+              resolve(base64Data);
+            } else {
+              reject(new Error('Failed to convert image to base64'));
+            }
+          } else {
+            reject(new Error('Unexpected file reader result type'));
+          }
+        };
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(blob);
+      });
+
+      // Get the file extension
+      const fileExtension = profilePic.split('.').pop()?.toLowerCase() || 'jpg';
+      const mimeType = `image/${fileExtension === 'png' ? 'png' : fileExtension === 'gif' ? 'gif' : 'jpeg'}`;
+
+      console.log('Uploading profile picture...');
+      const uploadUrl = `${API_BASE_URL}/users/me/avatar`;
+
+      const res = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${await AsyncStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          image: `data:${mimeType};base64,${base64Image}`
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log('Profile picture upload response:', data);
+
+      if (data && data.profilePictureUrl) {
+        await updateUser({ profile_picture: data.profilePictureUrl });
+        console.log('Profile picture updated successfully');
+      } else {
+        console.warn('No profile picture URL in response:', data);
+      }
+
+      setShowProfilePicModal(false);
+      setProfilePic(null);
+      router.replace('/(tabs)');
+    } catch (error) {
+      console.error('Profile picture upload failed:', error);
+      Alert.alert(
+        'Upload Failed',
+        'Failed to upload profile picture. Please try again.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setUploadingPic(false);
+    }
+  };
+
+  return (
+    <KeyboardSafeWrapper
+      style={styles.container}
+    >
+      <LinearGradient
+        colors={[backgroundColor, backgroundColor]}
+        style={{ flex: 1 }}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+      >
+        <DoodleBackground />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.header}>
+            <Image
+              source={isDark
+                ? require('../../assets/images/edufi-logo-white.png')
+                : require('../../assets/images/edufi-logo.png')
+              }
+              style={styles.logo}
+            />
+            {/* <ThemedText style={styles.appTitle} type="title">EDUFI</ThemedText> */}
+          </View>
+
+          <View style={styles.formContainer}>
+            <View style={[styles.formCard, { backgroundColor: 'transparent' }]}>
+              <ThemedText style={[styles.welcomeText, { color: theme.text }]} type="subtitle">
+                {isLogin ? 'Welcome Back!' : signupStep === 1 ? 'Create Account' : 'Academic Info'}
+              </ThemedText>
+
+              {errors.auth && (
+                <View style={styles.errorContainer}>
+                  <ThemedText style={styles.errorText}>{errors.auth}</ThemedText>
+                </View>
+              )}
+
+              {/* --- LOGIN or SIGNUP STEP 1 --- */}
+              {(isLogin || (!isLogin && signupStep === 1)) && (
+                <>
+                  {/* Signup Fields: Username & Full Name */}
+                  {!isLogin && (
+                    <>
+                      <View style={[styles.inputContainer, { backgroundColor: theme.cardAlt, borderColor: errors.username ? '#ff4444' : 'transparent' }]}>
+                        <Ionicons name="person-outline" size={20} color={textSecondaryColor} style={styles.inputIcon} />
+                        <TextInput
+                          style={[styles.input, { color: textColor }]}
+                          placeholder="Username"
+                          placeholderTextColor={textSecondaryColor}
+                          value={username} onChangeText={(text) => {
+                            setUsername(text.trim());
+                            setErrors(prev => ({ ...prev, username: '' }));
+                          }}
+                          autoCapitalize="none"
+                        />
+                      </View>
+                      {errors.username && <ThemedText style={styles.fieldError}>{errors.username}</ThemedText>}
+
+                      <View style={[styles.inputContainer, { backgroundColor: theme.cardAlt, borderColor: errors.fullName ? '#ff4444' : 'transparent' }]}>
+                        <Ionicons name="text-outline" size={20} color={textSecondaryColor} style={styles.inputIcon} />
+                        <TextInput
+                          style={[styles.input, { color: textColor }]}
+                          placeholder="Full Name"
+                          placeholderTextColor={textSecondaryColor}
+                          value={fullName}
+                          onChangeText={(text) => {
+                            setFullName(text);
+                            setErrors(prev => ({ ...prev, fullName: '' }));
+                          }}
+                        />
+                      </View>
+                      {errors.fullName && <ThemedText style={styles.fieldError}>{errors.fullName}</ThemedText>}
+                    </>
+                  )}
+
+                  {/* Common Fields: Email & Password */}
+                  <View style={[styles.inputContainer, { backgroundColor: theme.cardAlt, borderColor: errors.email ? '#ff4444' : 'transparent' }]}>
+                    <Ionicons name="mail-outline" size={20} color={textSecondaryColor} style={styles.inputIcon} />
+                    <TextInput
+                      style={[styles.input, { color: textColor }]}
+                      placeholder="Email or Username"
+                      placeholderTextColor={textSecondaryColor}
+                      value={email}
+                      onChangeText={(text) => {
+                        setEmail(text);
+                        setErrors(prev => ({ ...prev, email: '' }));
+                      }}
+                      autoCapitalize="none"
+                    />
+                  </View>
+                  {errors.email && <ThemedText style={styles.fieldError}>{errors.email}</ThemedText>}
+
+                  <View style={[styles.inputContainer, { backgroundColor: theme.cardAlt, borderColor: errors.password ? '#ff4444' : 'transparent' }]}>
+                    <Ionicons name="lock-closed-outline" size={20} color={textSecondaryColor} style={styles.inputIcon} />
+                    <TextInput
+                      style={[styles.input, { color: textColor }]}
+                      placeholder="Password"
+                      placeholderTextColor={textSecondaryColor}
+                      value={password}
+                      onChangeText={(text) => {
+                        setPassword(text);
+                        setErrors(prev => ({ ...prev, password: '' }));
+                      }}
+                      secureTextEntry={!showPassword}
+                    />
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.passwordToggle}>
+                      <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color={textSecondaryColor} />
+                    </TouchableOpacity>
+                  </View>
+                  {errors.password && <ThemedText style={styles.fieldError}>{errors.password}</ThemedText>}
+
+                  {/* Signup Confirm Password */}
+                  {!isLogin && (
+                    <>
+                      <View style={[styles.inputContainer, { backgroundColor: theme.cardAlt, borderColor: errors.confirmPassword ? '#ff4444' : 'transparent' }]}>
+                        <Ionicons name="lock-closed-outline" size={20} color={textSecondaryColor} style={styles.inputIcon} />
+                        <TextInput
+                          style={[styles.input, { color: textColor }]}
+                          placeholder="Confirm Password"
+                          placeholderTextColor={textSecondaryColor}
+                          value={confirmPassword}
+                          onChangeText={(text) => {
+                            setConfirmPassword(text);
+                            setErrors(prev => ({ ...prev, confirmPassword: '' }));
+                          }}
+                          secureTextEntry={!showConfirmPassword}
+                        />
+                        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.passwordToggle}>
+                          <Ionicons name={showConfirmPassword ? "eye-off-outline" : "eye-outline"} size={20} color={textSecondaryColor} />
+                        </TouchableOpacity>
+                      </View>
+                      {errors.confirmPassword && <ThemedText style={styles.fieldError}>{errors.confirmPassword}</ThemedText>}
+                    </>
+                  )}
+                </>
+              )}
+
+              {/* --- SIGNUP STEP 2 (Academic) --- */}
+              {!isLogin && signupStep === 2 && (
+                <View style={{ width: '100%' }}>
+                  <TouchableOpacity onPress={() => setSignupStep(1)} style={{ marginBottom: 15, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                    <Ionicons name="arrow-back" size={20} color={BrandColors.brandGreen} />
+                    <ThemedText style={{ color: BrandColors.brandGreen, marginLeft: 5, fontWeight: 'bold' }}>Back to Identity</ThemedText>
+                  </TouchableOpacity>
+
+                  {/* University Field */}
+                  <View style={{ zIndex: 2000 }}>
+                    <View style={[styles.inputContainer, { backgroundColor: theme.cardAlt, borderColor: errors.university ? '#ff4444' : 'transparent' }]}>
+                      <Ionicons name="school-outline" size={20} color={textSecondaryColor} style={styles.inputIcon} />
+                      <TextInput
+                        style={[styles.input, { color: textColor }]}
+                        placeholder="University"
+                        placeholderTextColor={textSecondaryColor}
+                        value={university}
+                        onChangeText={handleUniversityChange}
+                        onFocus={() => university.length > 0 && setShowUniversitySuggestions(universitySuggestions.length > 0)}
+                      />
+                    </View>
+                    {errors.university && <ThemedText style={styles.fieldError}>{errors.university}</ThemedText>}
+
+                    {showUniversitySuggestions && universitySuggestions.length > 0 && (
+                      <View style={[styles.suggestionsContainer, { backgroundColor: cardColor, borderColor }]}>
+                        {universitySuggestions.map((uni, index) => (
+                          <TouchableOpacity
+                            key={index}
+                            style={[styles.suggestionItem, { borderBottomColor: borderColor }]}
+                            onPress={() => selectUniversity(uni)}
+                          >
+                            <ThemedText style={{ color: textColor }}>{uni}</ThemedText>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+
+                  {/* Level Picker */}
+                  <View style={{ marginTop: 10 }}>
+                    {Platform.OS === 'ios' ? (
+                      <>
+                        <TouchableOpacity
+                          style={[styles.inputContainer, { backgroundColor: theme.cardAlt, borderColor: errors.level ? '#ff4444' : 'transparent' }]}
+                          onPress={() => setShowLevelPicker(true)}
+                        >
+                          <Ionicons name="bar-chart-outline" size={20} color={textSecondaryColor} style={styles.inputIcon} />
+                          <ThemedText style={[styles.input, { color: level ? textColor : textSecondaryColor }]}>
+                            {level || 'Select Level'}
+                          </ThemedText>
+                          <Ionicons name="chevron-down" size={20} color={textSecondaryColor} />
+                        </TouchableOpacity>
+
+                        <Modal visible={showLevelPicker} transparent={true} animationType="slide">
+                          <View style={styles.pickerModalOverlay}>
+                            <View style={[styles.pickerModalContent, { backgroundColor: cardColor }]}>
+                              <View style={styles.pickerModalHeader}>
+                                <TouchableOpacity onPress={() => setShowLevelPicker(false)}>
+                                  <ThemedText style={{ color: theme.primary, fontSize: 16 }}>Cancel</ThemedText>
+                                </TouchableOpacity>
+                                <ThemedText style={{ fontWeight: 'bold', fontSize: 16 }}>Select Level</ThemedText>
+                                <TouchableOpacity onPress={() => setShowLevelPicker(false)}>
+                                  <ThemedText style={{ color: theme.primary, fontSize: 16, fontWeight: 'bold' }}>Done</ThemedText>
+                                </TouchableOpacity>
+                              </View>
+                              <Picker
+                                selectedValue={level}
+                                onValueChange={(itemValue) => {
+                                  setLevel(itemValue);
+                                  setErrors(prev => ({ ...prev, level: '' }));
+                                }}
+                                itemStyle={{ color: textColor, fontSize: 18 }}
+                              >
+                                <Picker.Item label="Select Level" value="" />
+                                {LEVELS.map((lvl) => <Picker.Item key={lvl} label={lvl} value={lvl} />)}
+                              </Picker>
+                            </View>
+                          </View>
+                        </Modal>
+                      </>
+                    ) : (
+                      <View style={[styles.inputContainer, { backgroundColor: theme.cardAlt, borderColor: errors.level ? '#ff4444' : 'transparent', paddingHorizontal: 5 }]}>
+                        <Ionicons name="bar-chart-outline" size={20} color={textSecondaryColor} style={styles.inputIcon} />
+                        <Picker
+                          selectedValue={level}
+                          onValueChange={(itemValue) => {
+                            setLevel(itemValue);
+                            setErrors(prev => ({ ...prev, level: '' }));
+                          }}
+                          style={[styles.picker, { color: textColor }]}
+                          dropdownIconColor={textSecondaryColor}
+                        >
+                          <Picker.Item label="Select Level" value="" />
+                          {LEVELS.map((lvl) => <Picker.Item key={lvl} label={lvl} value={lvl} />)}
+                        </Picker>
+                      </View>
+                    )}
+                    {errors.level && <ThemedText style={styles.fieldError}>{errors.level}</ThemedText>}
+                  </View>
+
+                  <View style={[styles.inputContainer, { backgroundColor: theme.cardAlt, borderColor: errors.course ? '#ff4444' : 'transparent' }]}>
+                    <Ionicons name="book-outline" size={20} color={textSecondaryColor} style={styles.inputIcon} />
+                    <TextInput
+                      style={[styles.input, { color: textColor }]}
+                      placeholder="Course/Major"
+                      placeholderTextColor={textSecondaryColor}
+                      value={course}
+                      onChangeText={(text) => {
+                        setCourse(text);
+                        setErrors(prev => ({ ...prev, course: '' }));
+                      }}
+                    />
+                  </View>
+                  {errors.course && <ThemedText style={styles.fieldError}>{errors.course}</ThemedText>}
+                </View>
+              )}
+
+              {isLogin && (
+                <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPasswordButton}>
+                  <ThemedText style={styles.forgotPasswordText} type="defaultSemiBold">
+                    Forgot Password?
+                  </ThemedText>
+                </TouchableOpacity>
+              )}
+
+              <Button
+                onPress={handleAuthentication}
+                loading={loading}
+                fullWidth={true}
+                variant="primary"
+                style={styles.authButton}
+              >
+                {isLogin ? 'Login' : signupStep === 1 ? 'Next' : 'Create Account'}
+              </Button>
+
+              <View style={styles.orTextContainer}>
+                <View style={[styles.orLine, { backgroundColor: textSecondaryColor }]} />
+                <ThemedText style={styles.orText} type="default">
+                  or
+                </ThemedText>
+                <View style={[styles.orLine, { backgroundColor: textSecondaryColor }]} />
+              </View>
+
+              <View style={styles.socialButtonsContainer}>
+                <TouchableOpacity onPress={() => handleSocialLogin('google')} style={[styles.socialButton, { backgroundColor: cardColor, borderColor: borderColor }]}>
+                  <Image
+                    source={require('../../assets/images/google-icon.png')}
+                    style={{ width: 30, height: 30, resizeMode: 'contain' }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleSocialLogin('facebook')} style={[styles.socialButton, { backgroundColor: cardColor, borderColor: borderColor }]}>
+                  <Ionicons name="logo-facebook" size={30} color="#4267B2" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleSocialLogin('apple')} style={[styles.socialButton, { backgroundColor: cardColor, borderColor: borderColor }]}>
+                  <Ionicons name="logo-apple" size={30} color={textColor} />
+                </TouchableOpacity>
+              </View>
+
+              <Button
+                onPress={() => {
+                  setIsLogin(prev => !prev);
+                  setSignupStep(1);
+                }}
+                fullWidth={true}
+                variant="secondary"
+                style={styles.createAccountButton}
+                textStyle={styles.secondaryButtonText}
+              >
+                {isLogin ? 'Create Account' : 'Login'}
+              </Button>
+            </View>
+          </View>
+        </ScrollView>
+        {showProfilePicModal && (
+          <View style={[styles.modalOverlay, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
+            <View style={[styles.modalContent, { backgroundColor: backgroundColor, borderColor: borderColor }]}>
+              <ThemedText style={[styles.modalTitle, { color: textColor }]}>Upload a Profile Picture (Optional)</ThemedText>
+              <View style={styles.imageContainer}>
+                {profilePic ? (
+                  <Image
+                    source={{ uri: profilePic }}
+                    style={[
+                      styles.profileImage,
+                      {
+                        borderColor: borderColor,
+                        borderWidth: 1,
+                        backgroundColor: cardColor
+                      }
+                    ]}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <TouchableOpacity
+                    onPress={handleProfilePicPick}
+                    style={[
+                      styles.profileImagePlaceholder,
+                      {
+                        backgroundColor: cardColor,
+                        borderColor: borderColor,
+                        borderWidth: 1
+                      }
+                    ]}
+                  >
+                    <Ionicons name="camera" size={36} color={textSecondaryColor} />
+                  </TouchableOpacity>
+                )}
+              </View>
+              <View style={styles.modalButtons}>
+                <Button
+                  onPress={handleProfilePicPick}
+                  style={{
+                    ...styles.modalButton,
+                    backgroundColor: cardColor,
+                    borderColor: borderColor,
+                  }}
+                  variant="secondary"
+                  textStyle={{ color: textColor }}
+                >
+                  Choose Photo
+                </Button>
+                <Button
+                  onPress={handleProfilePicUpload}
+                  loading={uploadingPic}
+                  disabled={!profilePic}
+                  style={styles.modalButton}
+                  variant="primary"
+                >
+                  Upload & Continue
+                </Button>
+                <Button
+                  onPress={() => {
+                    setShowProfilePicModal(false);
+                    router.replace('/(tabs)');
+                  }}
+                  variant="secondary"
+                  style={{
+                    ...styles.modalButton,
+                    backgroundColor: 'transparent',
+                  }}
+                  textStyle={{ color: textColor }}
+                >
+                  Skip
+                </Button>
+              </View>
+            </View>
+          </View>
+        )}
+      </LinearGradient>
+    </KeyboardSafeWrapper>
+  );
+};
+
+export default LoginSignUpScreen;

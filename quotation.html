@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation - Abimarh Cakes and Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .document-container {
+            background-color: white;
+            width: 210mm;
+            /* A4 width */
+            min-height: 297mm;
+            /* A4 height */
+            padding: 40px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .company-name {
+            color: #1a5276;
+            /* Dark blue matching the original */
+            font-size: 32px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0 0 10px 0;
+            letter-spacing: 1px;
+        }
+
+        .address-info {
+            color: #b01a2e;
+            /* Dark red for address */
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        /* Reference Row Styles */
+        .ref-row {
+            display: flex;
+            justify-content: space-between;
+            color: #1a5276;
+            /* Dark blue */
+            font-size: 14px;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 2px;
+            padding: 0 15px;
+        }
+
+        .ref-item {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .ref-line {
+            display: inline-block;
+            border-bottom: 1px solid #1a5276;
+            width: 120px;
+            margin-left: 5px;
+        }
+
+        /* Main Content Box */
+        .main-box {
+            border: 3px solid #b83b8b;
+            /* Pink/Magenta border */
+            border-radius: 12px;
+            padding: 35px;
+            min-height: 600px;
+        }
+
+        .salutation {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .document-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .intro-text {
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 15px;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        td {
+            color: #333;
+        }
+
+        .bold-text {
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Footer Details */
+        .footer-details {
+            margin-top: 40px;
+            font-size: 15px;
+        }
+
+        .footer-details p {
+            margin: 12px 0;
+            font-weight: bold;
+            color: #222;
+        }
+
+        /* Download Button */
+        .no-print {
+            margin-bottom: 20px;
+        }
+
+        .download-btn {
+            background-color: #b83b8b; /* Matching the pink border */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+        }
+
+        .download-btn:hover {
+            background-color: #902a6b;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .document-container {
+                box-shadow: none;
+                width: 100%;
+                height: 100%;
+                padding: 20px;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="no-print">
+        <button class="download-btn" onclick="window.print()">Download as PDF</button>
+    </div>
+
+    <div class="document-container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1 class="company-name">ABIMARH CAKES AND EVENTS</h1>
+            <div class="address-info">
+                Address: 2, Tunji Abiodun Close, Aboru, Ipaja, Lagos.<br>
+                Tel: 08027320688
+            </div>
+        </div>
+
+        <!-- Reference Row -->
+        <div class="ref-row">
+            <div class="ref-item">Our Ref: <span class="ref-line"></span></div>
+            <div class="ref-item">Your Ref: <span class="ref-line"></span></div>
+            <div class="ref-item">Date: <span class="ref-line" style="width: 100px;"></span></div>
+        </div>
+
+        <!-- Main Content Box -->
+        <div class="main-box">
+            <div class="salutation">Dear Sir/Ma,</div>
+
+            <div class="document-title">QUOTATION FOR FOOD SERVICES</div>
+
+            <div class="intro-text">Below is the requested Quotation;</div>
+
+            <!-- Quotation Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>S/N</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold-text">1</td>
+                        <td>Rice & 2 beef</td>
+                        <td>600</td>
+                        <td>18,000</td>
+                        <td>10,800,000</td>
+                    </tr>
+                    <tr>
+                        <td class="bold-text">2</td>
+                        <td>Amala with gbegiri and ewedu and tinu eran with crocker fish</td>
+                        <td>300</td>
+                        <td>18,000</td>
+                        <td>5,400,000</td>
+                    </tr>
+                    <tr>
+                        <td class="bold-text">3</td>
+                        <td>Porridge with stew, beef and fish</td>
+                        <td>200</td>
+                        <td>18,000</td>
+                        <td>3,600,000</td>
+                    </tr>
+                    <tr>
+                        <td class="bold-text">4</td>
+                        <td>Ofada rice and ayamase sauce with egg, tinu eran and beef/beans and plantain with fish</td>
+                        <td>200</td>
+                        <td>18,000</td>
+                        <td>3,600,000</td>
+                    </tr>
+                    <tr>
+                        <td class="bold-text" colspan="4">Grand Total</td>
+                        <td class="bold-text">23,400,000</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Footer Bank Details -->
+            <div class="footer-details">
+                <p>Name: Osho Mariam</p>
+                <p>Bank: Sterling Bank</p>
+                <p>Account Number: 0077505270</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

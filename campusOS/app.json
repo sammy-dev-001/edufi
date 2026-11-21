@@ -1,0 +1,92 @@
+{
+  "expo": {
+    "name": "EduFi",
+    "slug": "campusos",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "edufi",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sammydev001.edufi",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#0B3C5D"
+      },
+      "package": "com.sammydev001.edufi",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCddkAGYOB5Rtnrf8zXNZee7HlJBaVR2bc"
+        }
+      },
+      "softwareKeyboardLayoutMode": "resize",
+      "allowBackup": true,
+      "permissions": [
+        "CAMERA",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
+        "READ_EXTERNAL_STORAGE",
+        "READ_CALENDAR",
+        "WRITE_CALENDAR"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "newArchEnabled": false
+          },
+          "ios": {
+            "newArchEnabled": false
+          }
+        }
+      ],
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0B3C5D"
+        }
+      ],
+      "expo-web-browser",
+      "expo-font",
+      "@react-native-community/datetimepicker",
+      "expo-image",
+      "expo-secure-store",
+      "expo-status-bar",
+      "expo-calendar",
+      "expo-notifications"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4db3bf0f-f0fc-4892-b786-3ff8f17744b0"
+      }
+    },
+    "owner": "sammy-dev-001",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/4db3bf0f-f0fc-4892-b786-3ff8f17744b0"
+    }
+  }
+}
